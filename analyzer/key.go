@@ -18,21 +18,30 @@ func NewKeyTypeTree(separators []byte) *KeyTypeTree {
 
 type KeyTypeTree struct {
 	trees [6]*tree.Tree
+	rw    sync.RWMutex
 }
 
 func (k *KeyTypeTree) AddKey(info *KeyInfo) {
+	k.rw.Lock()
+	defer k.rw.Unlock()
 	k.trees[info.KeyT].AddKey(info.Key, info.Size)
 }
 
 func (k *KeyTypeTree) GetSize(keyPrefix string, keyT KeyType) int64 {
+	k.rw.RLock()
+	defer k.rw.RUnlock()
 	return k.trees[keyT].GetSize(keyPrefix)
 }
 
 func (k *KeyTypeTree) Expand(keyPrefix string, keyT KeyType) map[string]*tree.Node {
+	k.rw.RLock()
+	defer k.rw.RUnlock()
 	return k.trees[keyT].Expand(keyPrefix)
 }
 
 func (k *KeyTypeTree) MergeSingleChildNode() {
+	k.rw.Lock()
+	defer k.rw.Unlock()
 	for _, t := range k.trees {
 		if t == nil {
 			continue

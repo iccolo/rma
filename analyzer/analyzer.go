@@ -33,6 +33,17 @@ func (a *Analyzer) Run() *KeyTypeTree {
 	return tree
 }
 
+func (a *Analyzer) AsyncRun() *KeyTypeTree {
+	tree := NewKeyTypeTree(a.Separators)
+	keysChan := make(chan []string, 10)
+
+	wg := &sync.WaitGroup{}
+	wg.Add(2)
+	go a.scan(keysChan, wg)
+	go a.analysisKey(keysChan, tree, wg)
+	return tree
+}
+
 func (a *Analyzer) dial() redigo.Conn {
 	address := fmt.Sprintf("%s:%d", a.Host, a.Port)
 	conn, err := redigo.Dial("tcp", address, redigo.DialPassword(a.Password))
