@@ -25,12 +25,12 @@ func (a *Analyzer) getKeyType(keysChan chan []string, infoChan chan []*KeyInfo, 
 	// set analyze key type, all types by default
 	types := make(map[string]KeyType)
 	for _, t := range a.Types {
-		if kt, ok := typeStrToType[t]; ok {
+		if kt, ok := KeyTypeStrToType[t]; ok {
 			types[t] = kt
 		}
 	}
 	if len(types) == 0 {
-		types = typeStrToType
+		types = KeyTypeStrToType
 	}
 
 	for keys := range keysChan {
@@ -56,7 +56,7 @@ func (a *Analyzer) getKeyType(keysChan chan []string, infoChan chan []*KeyInfo, 
 	close(infoChan)
 }
 
-var typeStrToType = map[string]KeyType{
+var KeyTypeStrToType = map[string]KeyType{
 	"string": KeyTypeString,
 	"list":   KeyTypeList,
 	"set":    KeyTypeSet,
@@ -64,7 +64,7 @@ var typeStrToType = map[string]KeyType{
 	"zset":   KeyTypeZset,
 }
 
-var typeToTypeStr = map[KeyType]string{
+var KeyTypeToTypeStr = map[KeyType]string{
 	KeyTypeString: "string",
 	KeyTypeList:   "list",
 	KeyTypeSet:    "set",

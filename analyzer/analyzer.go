@@ -33,7 +33,7 @@ func (a *Analyzer) Run() *KeyTypeTree {
 	return tree
 }
 
-func (a *Analyzer) AsyncRun() *KeyTypeTree {
+func (a *Analyzer) AsyncRun() (*KeyTypeTree, *sync.WaitGroup) {
 	tree := NewKeyTypeTree(a.Separators)
 	keysChan := make(chan []string, 10)
 
@@ -41,7 +41,7 @@ func (a *Analyzer) AsyncRun() *KeyTypeTree {
 	wg.Add(2)
 	go a.scan(keysChan, wg)
 	go a.analysisKey(keysChan, tree, wg)
-	return tree
+	return tree, wg
 }
 
 func (a *Analyzer) dial() redigo.Conn {

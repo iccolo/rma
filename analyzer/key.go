@@ -11,7 +11,7 @@ import (
 func NewKeyTypeTree(separators []byte) *KeyTypeTree {
 	t := &KeyTypeTree{trees: [6]*tree.Tree{}}
 	for i := 1; i <= 5; i++ {
-		t.trees[i] = tree.New(typeToTypeStr[i], separators)
+		t.trees[i] = tree.New(KeyTypeToTypeStr[i], separators)
 	}
 	return t
 }
@@ -56,7 +56,7 @@ func (k *KeyTypeTree) Print() {
 		if t == nil {
 			continue
 		}
-		fmt.Printf("Type:%s KeyNum:%d TotalSize:%d\n", typeToTypeStr[i], t.GetKeyNum(), t.GetTotalSize())
+		fmt.Printf("Type:%s KeyNum:%d TotalSize:%d\n", KeyTypeToTypeStr[i], t.GetKeyNum(), t.GetTotalSize())
 	}
 	fmt.Println("Detail:")
 	for _, t := range k.trees {
