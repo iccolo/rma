@@ -28,7 +28,7 @@ func (k *KeyTypeTree) GetSize(keyPrefix string, keyT KeyType) int64 {
 	return k.trees[keyT].GetSize(keyPrefix)
 }
 
-func (k *KeyTypeTree) Expand(keyPrefix string, keyT KeyType) map[string]int64 {
+func (k *KeyTypeTree) Expand(keyPrefix string, keyT KeyType) map[string]*tree.Node {
 	return k.trees[keyT].Expand(keyPrefix)
 }
 

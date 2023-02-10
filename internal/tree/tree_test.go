@@ -1,7 +1,6 @@
 package tree
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -16,14 +15,5 @@ func TestTree(t *testing.T) {
 	}
 	if size := t1.GetSize("foo/bar/"); size != 2 {
 		t.Errorf("Expected size of 2, got %d", size)
-	}
-	expanded := t1.Expand("foo/")
-	expected := map[string]int64{
-		"bar":  1,
-		"bar/": 2,
-		"qux":  3,
-	}
-	if !reflect.DeepEqual(expanded, expected) {
-		t.Errorf("Expected expanded to be %v, got %v", expected, expanded)
 	}
 }

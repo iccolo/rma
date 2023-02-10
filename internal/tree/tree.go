@@ -122,8 +122,10 @@ func (t *Tree) GetSize(keyPrefix string) int64 {
 	return size
 }
 
-func (t *Tree) Expand(keyPrefix string) map[string]int64 {
-	ret := make(map[string]int64)
+func (t *Tree) Expand(keyPrefix string) map[string]*Node {
+	if keyPrefix == "" {
+		return t.root.Child
+	}
 
 	tmpRoot := t.root
 	left := 0
@@ -132,15 +134,9 @@ func (t *Tree) Expand(keyPrefix string) map[string]int64 {
 		// key end
 		if right == len(keyPrefix)-1 {
 			if node, ok := tmpRoot.Child[keyPrefix[left:right+1]]; ok {
-				for _, child := range node.Child {
-					if len(child.Child) == 0 {
-						ret[child.Segment] = child.Size // if is key node, return complete key
-					} else {
-						ret[child.Segment] = child.Size
-					}
-				}
+				return node.Child
 			}
-			break
+			return nil
 		}
 		// is not key separator
 		if _, ok := t.separators[keyPrefix[right]]; !ok {
@@ -157,7 +153,7 @@ func (t *Tree) Expand(keyPrefix string) map[string]int64 {
 			right++ // even if not find segment split by separator, continue find longer segment
 		}
 	}
-	return ret
+	return nil
 }
 
 func (t *Tree) GetKeyNum() int64 {
