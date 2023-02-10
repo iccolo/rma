@@ -5,7 +5,7 @@ import (
 	"time"
 
 	redigo "github.com/gomodule/redigo/redis"
-	"github.com/iccolo/rma/internal/size"
+	"github.com/iccolo/rma/analyzer/size"
 )
 
 func (a *Analyzer) getKeySize(inChan chan []*KeyInfo, outChan chan []*KeyInfo, wg *sync.WaitGroup) {

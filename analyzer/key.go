@@ -5,7 +5,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/iccolo/rma/internal/tree"
+	"github.com/iccolo/rma/analyzer/tree"
 )
 
 func NewKeyTypeTree(separators []byte) *KeyTypeTree {
