@@ -33,6 +33,16 @@ func (k *KeyTypeTree) GetSize(keyPrefix string, keyT KeyType) int64 {
 	return k.trees[keyT].GetSize(keyPrefix)
 }
 
+func (k *KeyTypeTree) GetKeyTypeStr() []string {
+	var typeStrs []string
+	for keyType, typeStr := range KeyTypeToTypeStr {
+		if k.trees[keyType].GetKeyNum() > 0 {
+			typeStrs = append(typeStrs, typeStr)
+		}
+	}
+	return typeStrs
+}
+
 func (k *KeyTypeTree) Expand(keyPrefix string, keyT KeyType) map[string]*tree.Node {
 	k.rw.RLock()
 	defer k.rw.RUnlock()

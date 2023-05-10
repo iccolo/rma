@@ -10,19 +10,19 @@ import (
 
 type Analyzer struct {
 	Host       string
-	Port       uint
+	Port       uint `json:"port"`
 	Password   string
-	Count      uint
-	Limit      uint64
+	Count      uint   `json:"count"`
+	Limit      uint64 `json:"limit"`
 	Match      string
-	Types      []string
-	Separators []byte
+	Types      string
+	Separators string
 	Cluster    bool
-	Pause      time.Duration // ms
+	Pause      time.Duration `json:"pause"` // ms
 }
 
 func (a *Analyzer) Run() *KeyTypeTree {
-	tree := NewKeyTypeTree(a.Separators)
+	tree := NewKeyTypeTree([]byte(a.Separators))
 	keysChan := make(chan []string, 10)
 
 	wg := &sync.WaitGroup{}
@@ -34,7 +34,7 @@ func (a *Analyzer) Run() *KeyTypeTree {
 }
 
 func (a *Analyzer) AsyncRun() (*KeyTypeTree, *sync.WaitGroup) {
-	tree := NewKeyTypeTree(a.Separators)
+	tree := NewKeyTypeTree([]byte(a.Separators))
 	keysChan := make(chan []string, 10)
 
 	wg := &sync.WaitGroup{}

@@ -1,6 +1,7 @@
 package analyzer
 
 import (
+	"strings"
 	"sync"
 
 	redigo "github.com/gomodule/redigo/redis"
@@ -24,7 +25,7 @@ func (a *Analyzer) getKeyType(keysChan chan []string, infoChan chan []*KeyInfo, 
 
 	// set analyze key type, all types by default
 	types := make(map[string]KeyType)
-	for _, t := range a.Types {
+	for _, t := range strings.Split(a.Types, ",") {
 		if kt, ok := KeyTypeStrToType[t]; ok {
 			types[t] = kt
 		}

@@ -169,26 +169,41 @@ func (t *Tree) MergeSingleChildNode() {
 }
 
 func (t *Tree) mergeSingleChildNode(node *Node) {
-	if len(node.Child) == 0 {
-		return
-	}
-	if len(node.Child) == 1 {
-		for _, child := range node.Child {
-			node.Segment += child.Segment
-			node.Child = child.Child
-			t.mergeSingleChildNode(node)
+	for {
+		singleChildNode := findSingleChildNode(node)
+		if singleChildNode == nil { // has no single child node in Child
 			break
 		}
-	} else {
-		for _, child := range node.Child {
-			t.mergeSingleChildNode(child)
+		grandChild := findOneChildNode(singleChildNode)
+		grandChild.Segment = singleChildNode.Segment + grandChild.Segment
+		delete(node.Child, singleChildNode.Segment)
+		node.Child[grandChild.Segment] = grandChild
+	}
+
+	for _, child := range node.Child {
+		t.mergeSingleChildNode(child)
+	}
+}
+
+func findSingleChildNode(node *Node) *Node {
+	for _, child := range node.Child {
+		if len(child.Child) == 1 {
+			return child
 		}
 	}
+	return nil
+}
+
+func findOneChildNode(node *Node) *Node {
+	for _, child := range node.Child {
+		return child
+	}
+	return nil
 }
 
 // Print 打印字符串树
 func (t *Tree) Print() {
-	fmt.Printf("nodeNum:%v, keyNum:%v\n", t.nodeNum, t.root.KeyNum)
+	fmt.Printf("total size:%v, total key num:%v\n", t.root.Size, t.root.KeyNum)
 	t.root.print(0)
 }
 

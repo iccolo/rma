@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"strings"
 	"time"
 
 	"github.com/iccolo/rma/analyzer"
@@ -37,17 +36,17 @@ func init() {
 func main() {
 	flag.Parse()
 	a := &analyzer.Analyzer{
-		Host:     host,
-		Port:     port,
-		Password: password,
-		Count:    count,
-		Limit:    limit,
-		Match:    match,
-		Cluster:  cluster,
-		Pause:    pause,
+		Host:       host,
+		Port:       port,
+		Password:   password,
+		Count:      count,
+		Limit:      limit,
+		Match:      match,
+		Types:      types,
+		Separators: separators,
+		Cluster:    cluster,
+		Pause:      pause,
 	}
-	a.Types = strings.Split(types, ",")
-	a.Separators = []byte(separators)
 	tree := a.Run()
 	tree.Print()
 }
