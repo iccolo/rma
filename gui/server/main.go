@@ -17,10 +17,11 @@ func main() {
 	//	log.Fatal(err)
 	//}
 	//http.Handle("/", http.FileServer(statikFS))
-	http.HandleFunc("/api/get_instance_list", GetInstanceList)
-	http.HandleFunc("/api/start_analyze", StartAnalyze)
-	http.HandleFunc("/api/get_key_type", GetKeyType)
-	http.HandleFunc("/api/expand", Expand)
+	http.HandleFunc("/api/rma/get_instance_list", GetInstanceList)
+	http.HandleFunc("/api/rma/start_analyze", StartAnalyze)
+	http.HandleFunc("/api/rma/get_key_type", GetKeyType)
+	http.HandleFunc("/api/rma/expand", Expand)
+	http.HandleFunc("/api/rma/get_key_info", GetKeyInfo)
 	if err := http.ListenAndServe(":8090", nil); err != nil {
 		log.Fatal(err)
 	}
@@ -87,6 +88,27 @@ func Expand(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	out, _ := json.Marshal(nodeList)
+	log.Println("out:", string(out))
+	response.Write(out)
+	return
+}
+
+func GetKeyInfo(response http.ResponseWriter, request *http.Request) {
+	type In struct {
+		Host string `json:"host"`
+		Key  string `json:"key"`
+	}
+	in := &In{}
+	if intercept(response, request, in) {
+		return
+	}
+	keyInfo, err := h.GetKeyInfo(in.Host, in.Key, 10)
+	if err != nil {
+		log.Printf("GetKeyInfo err:%v, in:%+v", err, in)
+		response.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	out, _ := json.Marshal(keyInfo)
 	log.Println("out:", string(out))
 	response.Write(out)
 	return

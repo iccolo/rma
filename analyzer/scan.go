@@ -10,7 +10,7 @@ import (
 func (a *Analyzer) scan(keysChan chan []string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	conn := a.dial()
+	conn := a.Dial()
 	defer conn.Close()
 
 	var (

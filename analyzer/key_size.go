@@ -11,7 +11,7 @@ import (
 func (a *Analyzer) getKeySize(inChan chan []*KeyInfo, outChan chan []*KeyInfo, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	conn := a.dial()
+	conn := a.Dial()
 	defer conn.Close()
 
 	if !a.Cluster {

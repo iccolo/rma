@@ -20,7 +20,7 @@ const (
 func (a *Analyzer) getKeyType(keysChan chan []string, infoChan chan []*KeyInfo, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	conn := a.dial()
+	conn := a.Dial()
 	defer conn.Close()
 
 	// set analyze key type, all types by default

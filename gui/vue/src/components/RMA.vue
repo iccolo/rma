@@ -15,7 +15,22 @@
     </el-aside>
 
     <el-main>
-      <KeyTree v-bind:bindInstance="openInstance"></KeyTree>
+      <el-container>
+        <KeyTree v-bind:bindInstance="openInstance" v-on:click_key="showKeyInfo"></KeyTree>
+      </el-container>
+      <el-container>
+        <el-drawer
+          :visible="clickRedisKey !== ''"
+          :direction="'btt'"
+          :size="'30%'"
+          :with-header="false"
+          :title="'Key Info'"
+          :before-close="handleDrawerClose"
+          :show-close="true"
+          :modal="false">
+          <KeyInfo v-bind:host="openInstance" :redisKey="clickRedisKey"></KeyInfo>
+        </el-drawer>
+      </el-container>
     </el-main>
 
   </el-container>
@@ -25,15 +40,17 @@
 import InstanceList from '@/components/InstanceList'
 import NewInstanceDialog from '@/components/NewInstanceDialog'
 import KeyTree from '@/components/KeyTree'
+import KeyInfo from '@/components/KeyInfo'
 
 export default {
   name: 'RMA',
   data () {
     return {
-      openInstance: ''
+      openInstance: '',
+      clickRedisKey: ''
     }
   },
-  components: {NewInstanceDialog, InstanceList, KeyTree},
+  components: {NewInstanceDialog, InstanceList, KeyTree, KeyInfo},
   methods: {
     displayNewInstanceDialog () {
       this.$refs.newInstanceDialog.dialogVisible = true
@@ -43,6 +60,12 @@ export default {
     },
     openInstanceKeyTree (clickHost) {
       this.openInstance = clickHost
+    },
+    showKeyInfo (key) {
+      this.clickRedisKey = key
+    },
+    handleDrawerClose () {
+      this.clickRedisKey = ''
     }
   }
 }

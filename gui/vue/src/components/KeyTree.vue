@@ -5,6 +5,7 @@
            :load="loadNode"
            :render-content="renderContent"
            :key="bindInstance"
+           @node-click="handleNodeClick"
            lazy>
   </el-tree>
 </template>
@@ -32,7 +33,7 @@ export default {
         if (!this.bindInstance) {
           return
         }
-        axios.post('/api/get_key_type', {host: this.bindInstance})
+        axios.post('/api/rma/get_key_type', {host: this.bindInstance})
           .then(response => {
             console.log('get_key_type response.data', response.data)
             let leafs = []
@@ -50,19 +51,9 @@ export default {
           return
         }
         // 获取keyPrefix和keyType
-        let cursor = node
-        let keyPrefix = ''
-        let keyType = ''
-        while (cursor.level > 0) {
-          if (cursor.level === 1) {
-            keyType = cursor.label
-          } else {
-            keyPrefix = cursor.label + keyPrefix
-          }
-          cursor = cursor.parent
-        }
+        const {keyPrefix, keyType} = this.backtrace(node)
         // 拉下一层节点
-        axios.post('/api/expand', {
+        axios.post('/api/rma/expand', {
           host: this.bindInstance,
           key_type: keyType,
           key_prefix: keyPrefix,
@@ -83,6 +74,20 @@ export default {
           })
       }
     },
+    backtrace (node) {
+      let cursor = node
+      let keyPrefix = ''
+      let keyType = ''
+      while (cursor.level > 0) {
+        if (cursor.level === 1) {
+          keyType = cursor.label
+        } else {
+          keyPrefix = cursor.label + keyPrefix
+        }
+        cursor = cursor.parent
+      }
+      return {keyPrefix: keyPrefix, keyType: keyType}
+    },
     renderContent (h, {node, data, store}) {
       // 构建节点的内容
       let content = [h('span', {}, node.label)]
@@ -91,7 +96,8 @@ export default {
           style: {
             fontSize: '80%',
             color: '#424040',
-            marginLeft: '20px'
+            marginLeft: '20px',
+            span: 6
           }
         }, [this.formatBytes(node.data.info.total_size)]))
 
@@ -100,7 +106,8 @@ export default {
             style: {
               fontSize: '80%',
               color: '#424040',
-              marginLeft: '20px'
+              marginLeft: '20px',
+              span: 8
             }
           }, ['子key数量:', node.data.info.child_num]))
         }
@@ -109,10 +116,11 @@ export default {
       return h(
         'span',
         {
-          style: {
-            display: 'inline-block',
-            width: '100%'
-          }
+          class: 'custom-tree-node'
+          // style: {
+          //   display: 'inline-block',
+          //   width: '100%'
+          // }
         },
         content
       )
@@ -123,6 +131,11 @@ export default {
       const i = Math.floor(Math.log(bytes) / Math.log(1024))
       const value = parseFloat((bytes / Math.pow(1024, i)).toFixed(2))
       return value + ' ' + sizes[i]
+    },
+    handleNodeClick (nodeData) {
+      if (nodeData.isLeaf) {
+        this.$emit('click_key', nodeData.label)
+      }
     }
   }
 }

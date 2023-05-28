@@ -1,5 +1,6 @@
 <template>
-  <el-dialog class="new_instance_dialog" title="New Instance" :visible.sync="dialogVisible">
+  <el-dialog class="new_instance_dialog" title="New Instance" :close-on-click-modal="false"
+             :visible.sync="dialogVisible">
     <el-form>
       <el-row :gutter=15>
         <el-col :span=8>
@@ -96,7 +97,7 @@ export default {
   props: [],
   methods: {
     confirm () {
-      axios.post('/api/start_analyze', this.instance)
+      axios.post('/api/rma/start_analyze', this.instance)
         .then(response => {
           this.dialogVisible = false
           this.$emit('newInstanceFinished')

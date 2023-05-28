@@ -44,7 +44,7 @@ func (a *Analyzer) AsyncRun() (*KeyTypeTree, *sync.WaitGroup) {
 	return tree, wg
 }
 
-func (a *Analyzer) dial() redigo.Conn {
+func (a *Analyzer) Dial() redigo.Conn {
 	address := fmt.Sprintf("%s:%d", a.Host, a.Port)
 	conn, err := redigo.Dial("tcp", address, redigo.DialPassword(a.Password))
 	errorJudge("dial redis", err)

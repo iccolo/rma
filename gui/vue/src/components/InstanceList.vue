@@ -13,14 +13,7 @@ export default {
   name: 'InstanceList',
   data () {
     return {
-      instance_list: [
-        {
-          host: '127.0.0.1',
-          analyze_start_time: '2022-01-02 12:13:16',
-          analyze_end_time: '2022-01-02 12:13:16',
-          is_finish: false
-        }
-      ]
+      instance_list: []
     }
   },
   created () {
@@ -28,7 +21,7 @@ export default {
   },
   methods: {
     update () {
-      axios.post('/api/get_instance_list')
+      axios.post('/api/rma/get_instance_list')
         .then(response => {
           if (response.data) {
             console.log(response.data)
